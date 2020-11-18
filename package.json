@@ -1,16 +1,24 @@
 {
-  "name": "Decorators-POC",
+  "name": "express-typescript",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Express with Typescript",
+  "main": "app.ts",
   "scripts": {
     "start": "node bin/app.js",
     "dev": "nodemon app/app.ts",
     "build": "tsc -p ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShujaARizvi/express-typescript.git"
+  },
+  "author": "Shuja Rizvi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ShujaARizvi/express-typescript/issues"
+  },
+  "homepage": "https://github.com/ShujaARizvi/express-typescript#readme",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/typescript": "^2.0.0",
     "@types/node": "^8.0.29",
