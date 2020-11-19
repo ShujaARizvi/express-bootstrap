@@ -1,8 +1,9 @@
 import { fromRoute } from '../decorators/fromRoute';
 import { route } from '../decorators/route';
+import { BaseController } from './baseController';
 
-export class DecoratorDemoController {
-
+export class UsersController extends BaseController {
+    
     @route('/api/users')
     all() {
         console.log('method all() called.');
@@ -20,5 +21,5 @@ export class DecoratorDemoController {
         console.log(`method getPosts() called with id: ${id} and profileId: ${profileId}`);
         return 'success';
     }
-
+    
 }

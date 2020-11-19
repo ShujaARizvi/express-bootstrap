@@ -2,7 +2,9 @@ import { ParamInfo } from "../entities/paramInfo";
 import { RouteInfo } from "../entities/routeInfo";
 
 export function route(route: string) {
-    return function(target: any, propertyKey: string) {
+    
+    return (target: any, propertyKey: string) => {
+        
         if (!target.hasOwnProperty('routes')) {
             Object.defineProperty(target, 'routes', {
                 value: new Array<RouteInfo>()
@@ -39,4 +41,5 @@ export function route(route: string) {
             });
         }
     };
+
 }
