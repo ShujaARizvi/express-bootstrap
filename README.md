@@ -1,6 +1,6 @@
-# Express Typescript
+# Express Bootstrap
 ***
-An implementation of the ExpressJS framework using the power of Typescript. 
+A powerful Typescript based middleware for Express.
 
 To run in dev mode, use the following:
 `npm run dev`

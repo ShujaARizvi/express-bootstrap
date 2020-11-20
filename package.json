@@ -1,7 +1,7 @@
 {
-  "name": "express-typescript",
+  "name": "express-bootstrap",
   "version": "1.0.0",
-  "description": "Express with Typescript",
+  "description": "A powerful Typescript based middleware for Express.",
   "main": "app.ts",
   "scripts": {
     "start": "node bin/app.js",

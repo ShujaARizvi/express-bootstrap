@@ -1,3 +1,4 @@
+import { HTTPMethod } from "../constants/enum";
 import { ParamInfo } from "./paramInfo";
 
 export class RouteInfo {
@@ -6,6 +7,7 @@ export class RouteInfo {
     method: string;
     routeParamsIndices: number[];
     params: ParamInfo[];
+    httpMethod: HTTPMethod;
 
     constructor() {
         this.routeParamsIndices = new Array<number>();
