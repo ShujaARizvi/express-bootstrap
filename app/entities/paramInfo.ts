@@ -3,11 +3,13 @@ import { ParamType } from "../constants/enum";
 export class ParamInfo {
     index: number;
     name: string;
-    type: ParamType;
+    paramType: ParamType;
+    model: any;
 
-    public constructor(index: number, name: string, type: ParamType) {
+    public constructor(index: number, name: string, paramType: ParamType, model?: any) {
         this.index = index;
         this.name = name;
-        this.type = type;
+        this.paramType = paramType;
+        this.model = model;
     }
 }

@@ -60,7 +60,7 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
         }
 
         const queriesOrNone = '(?:[?]{1}.*|)';
-        const alphaNumericAny = '[A-Za-z0-9]+';
+        const alphaNumericAny = '[A-Za-z0-9%]+';
         const routeParamRegex = /:[0-9A-Za-z]+/g;
 
         const routes = <RouteInfo[]>target.routes;
@@ -87,7 +87,7 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
 /**
  * When set on a route parameter, specifies that the parameter comes from the query of the request.
  */
-export function fromQuery() {
+export function fromQuery(model: any) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         
@@ -96,11 +96,11 @@ export function fromQuery() {
         const routes = <RouteInfo[]>target.routes;
         let route = checkAndCreateRoute(target, routes, functionKey);
         if (route) {
-            if (route.params.find(x => x.type === ParamType.Query)){
+            if (route.params.find(x => x.paramType === ParamType.Query)){
                 throw new Error('There cannot be multiple query param models in a single request.');
             }
             route.params = 
-                [new ParamInfo(parameterIndex, '', ParamType.Query), ...route.params];
+                [new ParamInfo(parameterIndex, '', ParamType.Query, model), ...route.params];
         }
     };
 }
@@ -108,7 +108,7 @@ export function fromQuery() {
 /**
  * When set on a route parameter, specifies that the parameter comes from the body of the request.
  */
-export function fromBody() {
+export function fromBody(model: any) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         
@@ -117,11 +117,11 @@ export function fromBody() {
         const routes = <RouteInfo[]>target.routes;
         let route = checkAndCreateRoute(target, routes, functionKey);
         if (route) {
-            if (route.params.find(x => x.type === ParamType.Body)){
+            if (route.params.find(x => x.paramType === ParamType.Body)){
                 throw new Error('There cannot be multiple bodies in a single request.');
             }
             route.params = 
-                [new ParamInfo(parameterIndex, '', ParamType.Body), ...route.params];
+                [new ParamInfo(parameterIndex, '', ParamType.Body, model), ...route.params];
         }
     };
 }

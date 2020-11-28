@@ -1,4 +1,4 @@
-import { route } from "../decorators/routeDecorators";
+import { route } from "../decorators/routingDecorator";
 import { BaseController } from "./baseController";
 
 export class HomeController extends BaseController {

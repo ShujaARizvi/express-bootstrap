@@ -3,6 +3,7 @@ import { ControllersContainer } from './container';
 import { NextFunction, Request, Response } from 'express';
 import { RouteInfo } from "./entities/routeInfo";
 import { ParamType } from "./constants/enum";
+import { deserialize } from "./helpers/json";
 
 /**
  * Bootstraps the whole application.
@@ -34,24 +35,28 @@ export function bootstrap(params: {base?: string, controllers: typeof BaseContro
             const routes = <RouteInfo[]>(<any>controller).routes;
             
             const matchedRoute = routes.find(x => new RegExp(x.routeRegex).test(url)
-                && x.httpMethod.toString() == method);
+                && x.httpMethod.toString() === method);
             if (matchedRoute && req.url.startsWith(params.base!)) {
                 const routeParams =  getRouteParams(matchedRoute.route, matchedRoute.routeParamsIndices, url);
                 
                 let methodExecutionExpression = `controller.${matchedRoute.method}(`;
+                let modelParams = new Array();
                 matchedRoute.params.forEach((x, index) => {
-                    switch (x.type) {
+                    switch (x.paramType) {
                         case ParamType.Body:
-                            methodExecutionExpression += JSON.stringify(requestBody);
+                            modelParams.push(deserialize(requestBody, x.model));
+                            methodExecutionExpression += `modelParams[${modelParams.length - 1}]`;
                             break;
                         case ParamType.Query:
-                            methodExecutionExpression += JSON.stringify(queryParams);
+                            modelParams.push(deserialize(queryParams, x.model));
+                            methodExecutionExpression += `modelParams[${modelParams.length - 1}]`;
                             break;
                         case ParamType.Route:
-                            methodExecutionExpression += routeParams[x.name];
+                            methodExecutionExpression += isNaN(routeParams[x.name]) ? 
+                                `'${decodeURIComponent(routeParams[x.name])}'` : routeParams[x.name];
                             break;
                     }
-                    if (index < matchedRoute.params.length-1) {
+                    if (index < matchedRoute.params.length - 1) {
                         methodExecutionExpression += ',';
                     }
                 });
