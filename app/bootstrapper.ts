@@ -38,18 +38,18 @@ export function bootstrap(params: {base?: string, controllers: typeof BaseContro
                 && x.httpMethod.toString() === method);
             if (matchedRoute && req.url.startsWith(params.base!)) {
                 const routeParams =  getRouteParams(matchedRoute.route, matchedRoute.routeParamsIndices, url);
-                
-                let methodExecutionExpression = `controller.${matchedRoute.method}(`;
+                let methodExecutionExpression = `${Object.keys({controller})[0]}.${matchedRoute.method}(`;
                 let modelParams = new Array();
+                const paramsArrayVarName = Object.keys({modelParams})[0];
                 matchedRoute.params.forEach((x, index) => {
                     switch (x.paramType) {
                         case ParamType.Body:
                             modelParams.push(deserialize(requestBody, x.model));
-                            methodExecutionExpression += `modelParams[${modelParams.length - 1}]`;
+                            methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
                             break;
                         case ParamType.Query:
                             modelParams.push(deserialize(queryParams, x.model));
-                            methodExecutionExpression += `modelParams[${modelParams.length - 1}]`;
+                            methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
                             break;
                         case ParamType.Route:
                             methodExecutionExpression += isNaN(routeParams[x.name]) ? 

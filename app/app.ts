@@ -17,7 +17,7 @@ app.use(bootstrap({
     controllers: [
         HomeController,
         UsersController,
-        RandomController,
+        RandomController
     ]
 }));
 

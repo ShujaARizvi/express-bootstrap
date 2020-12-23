@@ -1,7 +1,8 @@
 import { composeMany } from "../decorators/compositionDecorator";
+import { Model } from "./baseModel";
 import { Interest } from "./interest";
 
-export class User {
+export class User extends Model {
     public name: string;
     public email: string;
     public age: number;

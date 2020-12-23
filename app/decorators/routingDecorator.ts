@@ -1,6 +1,7 @@
 import { HTTPMethod, ParamType } from "../constants/enum";
 import { ParamInfo } from "../entities/paramInfo";
 import { RouteInfo } from "../entities/routeInfo";
+import { Model } from "../models/baseModel";
 
 function checkAndCreateRoutesProperty(target: any) {
     if (!target.hasOwnProperty('routes')) {
@@ -60,7 +61,8 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
         }
 
         const queriesOrNone = '(?:[?]{1}.*|)';
-        const alphaNumericAny = '[A-Za-z0-9%]+';
+        const alphaNumericAny = '[0-9A-Za-z]+';
+        // const alphaNumericAny = '(?!\/).*';
         const routeParamRegex = /:[0-9A-Za-z]+/g;
 
         const routes = <RouteInfo[]>target.routes;
@@ -87,7 +89,7 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
 /**
  * When set on a route parameter, specifies that the parameter comes from the query of the request.
  */
-export function fromQuery(model: any) {
+export function fromQuery(model: typeof Model) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         
@@ -108,7 +110,7 @@ export function fromQuery(model: any) {
 /**
  * When set on a route parameter, specifies that the parameter comes from the body of the request.
  */
-export function fromBody(model: any) {
+export function fromBody(model: typeof Model) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         

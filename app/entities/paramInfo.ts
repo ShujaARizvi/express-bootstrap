@@ -1,8 +1,17 @@
 import { ParamType } from "../constants/enum";
 
 export class ParamInfo {
+    /**
+     * Index of the param.
+     */
     index: number;
+    /**
+     * Name of the param.
+     */
     name: string;
+    /**
+     * Type of the param.
+     */
     paramType: ParamType;
     model: any;
 

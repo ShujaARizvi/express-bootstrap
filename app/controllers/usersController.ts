@@ -1,21 +1,17 @@
 import { HTTPMethod } from '../constants/enum';
 import { route, fromRoute, fromBody, fromQuery } from '../decorators/routingDecorator';
+import { Model } from '../models/baseModel';
 import { User } from '../models/user';
 import { BaseController } from './baseController';
 
 
-class BaseModel {
-    public stringify() {
-        console.log(JSON.stringify(this));
-    }
+class UserFilter extends Model {
+    page: number;
+    pageSize: number;
+
     public toString() {
         return JSON.stringify(this);
     }
-}
-
-class UserFilter extends BaseModel {
-    page: number;
-    pageSize: number;
 }
 
 export class UsersController extends BaseController {
@@ -52,10 +48,10 @@ export class UsersController extends BaseController {
         @fromQuery(UserFilter) filter: UserFilter, 
         @fromRoute('username') name: string) {
             
-            console.log('This is one hell of a weird route');
-            console.log(`Lets checkout passed in user: ${user}`);
-            console.log(`Now lets checkout passed in filter: ${filter}`);
-            console.log(`Oh, almost forget the route params. Here is the id: ${id} and the name: ${name}`);
-        }
+        console.log('This is one hell of a weird route.');
+        console.log(`Lets checkout passed in user: ${user}`);
+        console.log(`Now lets checkout passed in filter: ${filter}`);
+        console.log(`Oh, almost forget the route params. Here is the id: ${id} and the name: ${name}`);
+    }
     
 }
