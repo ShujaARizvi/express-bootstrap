@@ -47,7 +47,7 @@ export class UsersController extends BaseController {
         @fromBody(User) user: User, 
         @fromQuery(UserFilter) filter: UserFilter, 
         @fromRoute('username') name: string) {
-            
+        
         console.log('This is one hell of a weird route.');
         console.log(`Lets checkout passed in user: ${user}`);
         console.log(`Now lets checkout passed in filter: ${filter}`);

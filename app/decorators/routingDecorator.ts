@@ -62,7 +62,7 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
 
         const queriesOrNone = '(?:[?]{1}.*|)';
         const alphaNumericAny = '[0-9A-Za-z]+';
-        // const alphaNumericAny = '(?!\/).*';
+        // const alphaNumericAny = '(?!.*(\\/|#|\\?)).+';
         const routeParamRegex = /:[0-9A-Za-z]+/g;
 
         const routes = <RouteInfo[]>target.routes;
@@ -72,6 +72,7 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
             matchedRoute.route = route;
             matchedRoute.httpMethod = httpMethod;
             matchedRoute.routeRegex = '^' + route.replace(/\//g, '\\/').replace(routeParamRegex, alphaNumericAny) + queriesOrNone + '$';
+            console.log(matchedRoute.routeRegex);
             matchedRoute.routeParamsIndices = routeParamsIndices;
         } else {
             target.routes.push({ 
