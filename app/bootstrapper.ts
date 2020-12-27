@@ -2,14 +2,24 @@ import { BaseController } from "./controllers/baseController";
 import { ControllersContainer } from './container';
 import { NextFunction, Request, Response } from 'express';
 import { RouteInfo } from "./entities/routeInfo";
-import { ParamType } from "./constants/enum";
+import { HTTPResponse, ParamType } from "./constants/enum";
 import { deserialize } from "./helpers/json";
+import Joi, { object, ValidationError } from "joi";
+import { responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
 
 /**
  * Bootstraps the whole application.
  * @param params Register all the controllers here and optionally provide a base route for all endpoints. 
  */
-export function bootstrap(params: {base?: string, controllers: typeof BaseController[]}) {
+export function bootstrap(params: {
+    /**
+     * The base route for all endpoints - for example: /api/v1
+     */
+    base?: string,
+    /**
+     * List of controllers to be used throughout the application.
+     */
+    controllers: typeof BaseController[]}) {
     
     params.controllers.forEach(x => {
         const controllerName = x.name.replace('Controller', '').toLowerCase();
@@ -22,6 +32,7 @@ export function bootstrap(params: {base?: string, controllers: typeof BaseContro
     return (req: Request, res: Response, next: NextFunction) => {
 
         let isRouteResolved = false;
+        let validationErrorOccurred = false;
 
         const url = req.url.replace(params.base!, '');
         const method = req.method;
@@ -41,15 +52,29 @@ export function bootstrap(params: {base?: string, controllers: typeof BaseContro
                 let methodExecutionExpression = `${Object.keys({controller})[0]}.${matchedRoute.method}(`;
                 let modelParams = new Array();
                 const paramsArrayVarName = Object.keys({modelParams})[0];
+
                 matchedRoute.params.forEach((x, index) => {
+                    let validationError;
                     switch (x.paramType) {
                         case ParamType.Body:
-                            modelParams.push(deserialize(requestBody, x.model));
-                            methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
+                            validationError = performInputValidation(x.model, requestBody);
+                            if (validationError) {
+                                res.status(HTTPResponse.UnprocessableEntity).send(validationError);
+                                validationErrorOccurred = true;
+                            } else {
+                                modelParams.push(deserialize(requestBody, x.model));
+                                methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
+                            }
                             break;
                         case ParamType.Query:
-                            modelParams.push(deserialize(queryParams, x.model));
-                            methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
+                            validationError = performInputValidation(x.model, queryParams);
+                            if (validationError) {
+                                res.status(HTTPResponse.UnprocessableEntity).send(validationError);
+                                validationErrorOccurred = true;
+                            } else {
+                                modelParams.push(deserialize(queryParams, x.model));
+                                methodExecutionExpression += `${paramsArrayVarName}[${modelParams.length - 1}]`;
+                            }
                             break;
                         case ParamType.Route:
                             methodExecutionExpression += isNaN(routeParams[x.name]) ? 
@@ -61,8 +86,15 @@ export function bootstrap(params: {base?: string, controllers: typeof BaseContro
                     }
                 });
                 methodExecutionExpression += ')';
-                const result = eval(methodExecutionExpression);
-                res.status(200).send(result);
+                if (!validationErrorOccurred) {
+                    const result = eval(methodExecutionExpression);
+                    // Check if result has the custom 'Response' type.
+                    if (result[responseClassIdentifier]) {
+                        res.status(result.statusCode).send(result.data);
+                    } else {
+                        res.status(200).send(result);
+                    }
+                }
                 isRouteResolved = true;
             } 
         }
@@ -83,4 +115,19 @@ function getRouteParams(toMatch: string, routeParamsIndices: number[], toParse: 
             toParseSplit[index].replace(queryParamsRegex, '');
     });
     return routeParams;
+}
+
+function performInputValidation(model: any, input: any) {
+    
+    let validationErrorDetails;
+
+    const obj = new model();
+    if (obj[validationSchemaPropertyName]) {
+        const validationError = Joi.object(obj[validationSchemaPropertyName]).validate(input).error;
+        if (validationError) {
+            validationErrorDetails = validationError.details;
+        }
+    }
+
+    return validationErrorDetails;
 }

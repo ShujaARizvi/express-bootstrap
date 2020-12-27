@@ -1,3 +1,4 @@
+import { Model } from "../models/baseModel";
 
 export class Composition {
     property: string; 

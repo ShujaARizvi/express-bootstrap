@@ -1,10 +1,10 @@
-import { route } from "../decorators/routingDecorator";
+import { Get } from "../decorators/routingDecorator";
 import { BaseController } from "./baseController";
 
 export class HomeController extends BaseController {
 
-    @route()
+    @Get()
     greet() {
-        return 'Hello World of Express Typescript';
+        return { message: 'Hello World of Express Typescript' };
     }
 }

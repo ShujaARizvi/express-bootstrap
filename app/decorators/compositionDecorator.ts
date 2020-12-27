@@ -1,4 +1,5 @@
 import { Composition } from "../entities/composition";
+import { Model } from "../models/baseModel";
 
 /**
  * Specify on the array properties.

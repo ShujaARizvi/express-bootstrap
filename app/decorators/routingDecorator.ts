@@ -34,7 +34,7 @@ function checkAndCreateRoute(target: any, routes: RouteInfo[], key: string) {
  * @param httpMethod Optional http method for the route. 
  * If not provided, assumes the default which is 'GET'.
  */
-export function route(route?: string, httpMethod?: HTTPMethod) {
+function routeHandler(route?: string, httpMethod?: HTTPMethod) {
     
     return (target: any, propertyKey: string) => {
         
@@ -72,7 +72,6 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
             matchedRoute.route = route;
             matchedRoute.httpMethod = httpMethod;
             matchedRoute.routeRegex = '^' + route.replace(/\//g, '\\/').replace(routeParamRegex, alphaNumericAny) + queriesOrNone + '$';
-            console.log(matchedRoute.routeRegex);
             matchedRoute.routeParamsIndices = routeParamsIndices;
         } else {
             target.routes.push({ 
@@ -88,9 +87,55 @@ export function route(route?: string, httpMethod?: HTTPMethod) {
 }
 
 /**
+ * Specifies that a controller method is to be exposed as an HTTP GET endpoint.
+ * @param route Optional route for the method to be exposed as endpoint. 
+ * If not provided, assumes the default for this resource.
+ */
+export function Get(route?: string) {
+    return routeHandler(route, HTTPMethod.Get);
+}
+
+/**
+ * Specifies that a controller method is to be exposed as an HTTP POST endpoint.
+ * @param route Optional route for the method to be exposed as endpoint. 
+ * If not provided, assumes the default for this resource.
+ */
+export function Post(route?: string) {
+    return routeHandler(route, HTTPMethod.Post);
+}
+
+/**
+ * Specifies that a controller method is to be exposed as an HTTP PUT endpoint.
+ * @param route Optional route for the method to be exposed as endpoint. 
+ * If not provided, assumes the default for this resource.
+ */
+export function Put(route?: string) {
+    return routeHandler(route, HTTPMethod.Put);
+}
+
+/**
+ * Specifies that a controller method is to be exposed as an HTTP PATCH endpoint.
+ * @param route Optional route for the method to be exposed as endpoint. 
+ * If not provided, assumes the default for this resource.
+ */
+export function Patch(route?: string) {
+    return routeHandler(route, HTTPMethod.Patch);
+}
+
+/**
+ * Specifies that a controller method is to be exposed as an HTTP DELETE endpoint.
+ * @param route Optional route for the method to be exposed as endpoint. 
+ * If not provided, assumes the default for this resource.
+ */
+export function Delete(route?: string) {
+    return routeHandler(route, HTTPMethod.Delete);
+}
+
+
+/**
  * When set on a route parameter, specifies that the parameter comes from the query of the request.
  */
-export function fromQuery(model: typeof Model) {
+export function FromQuery(model: typeof Model) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         
@@ -111,7 +156,7 @@ export function fromQuery(model: typeof Model) {
 /**
  * When set on a route parameter, specifies that the parameter comes from the body of the request.
  */
-export function fromBody(model: typeof Model) {
+export function FromBody(model: typeof Model) {
     
     return (target: any, functionKey: string, parameterIndex: number) => {
         
@@ -133,7 +178,7 @@ export function fromBody(model: typeof Model) {
  * When set on a route parameter, specifies that the parameter comes from the route of the request.
  * @param parameterName Parameter name to be used. Note that the parameter name specified here should match with the one in the route.
  */
-export function fromRoute(parameterName: string) {
+export function FromRoute(parameterName: string) {
     return function(target: any, functionKey: string, parameterIndex: number) {
         
         checkAndCreateRoutesProperty(target);
