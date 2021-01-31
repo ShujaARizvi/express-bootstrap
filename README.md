@@ -257,6 +257,3 @@ The original author of Express Bootstrap is [Shuja Rizvi](https://github.com/Shu
 
 # License
 [MIT](https://github.com/ShujaARizvi/express-typescript/blob/main/LICENSE)
-
-# Keywords
-[express](https://www.npmjs.com/package/express) [bootstrap](https://www.google.com/search?q=bootstrap+meaning) [typescript](https://www.npmjs.com/package/typescript) [api](https://www.google.com/search?q=api+meaning) [controllers](https://www.tutorialsteacher.com/Content/images/webapi/webapi-request-pipeline.png) [endpoints](https://smartbear.com/learn/performance-monitoring/api-endpoints/#:~:text=For%20APIs%2C%20an%20endpoint%20can,to%20carry%20out%20their%20function.&text=The%20place%20that%20APIs%20send,lives%2C%20is%20called%20an%20endpoint.)
