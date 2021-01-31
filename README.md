@@ -202,9 +202,9 @@ $ npm install xpress-bootstrap
     `Express Bootstrap` uses [Joi](https://www.npmjs.com/package/joi) for its user input validation. The `validate` decorator is used to validate each individual field of a model.
     
     The validate decorator takes an object that has the following 3 properties:
-    ***constraint:*** The `Joi` constraint for this property.
-    ***arrayElementsConstraint (Optional):*** If the property is an array of object, this property should be provided to specify the constraint on the array objects.
-    ***model (Optional):*** If an object is used, the type should be provided. The object class should extend the 'Model' class.
+    ***constraint:*** The `Joi` constraint for this property.  
+    ***arrayElementsConstraint (Optional):*** If the property is an array of object, this property should be provided to specify the constraint on the array objects.  
+    ***model (Optional):*** If an object is used, the type should be provided. The object class should extend the 'Model' class.  
 
     Lets take our good old `User` type and apply input validation to it. It would look something like the following:
     ```
@@ -231,11 +231,11 @@ $ npm install xpress-bootstrap
         public nicknames: string[];
     }
     ```
-    ***name*** is a string.
-    ***email*** is a string that is an email.
-    ***age*** is a number whose value can be between 18 and 60 inclusive.
-    ***address*** is an array that is required. It is of type `Interest`. The array should have atleast one object.
-    ***nicknames*** is an array of strings. The array is required.
+    ***name*** is a string.  
+    ***email*** is a string that is an email.  
+    ***age*** is a number whose value can be between 18 and 60 inclusive.  
+    ***address*** is an array that is required. It is of type `Interest`. The array should have atleast one object.  
+    ***nicknames*** is an array of strings. The array is required.  
 
     For a full list of validation options and capabilities, kindly check [Joi documentation](https://joi.dev/api/?v=17.3.0).
 
