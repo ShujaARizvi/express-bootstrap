@@ -1,8 +1,7 @@
 {
-  "name": "express-bootstrap",
+  "name": "xpress-bootstrap",
   "version": "1.0.0",
   "description": "A powerful Typescript based middleware for Express.",
-  "main": "app.ts",
   "scripts": {
     "start": "node bin/app.js",
     "dev": "nodemon app/app.ts",
@@ -18,7 +17,17 @@
     "url": "https://github.com/ShujaARizvi/express-typescript/issues"
   },
   "homepage": "https://github.com/ShujaARizvi/express-typescript#readme",
-  "keywords": [],
+  "keywords": [
+    "express",
+    "bootstrap",
+    "typescript",
+    "api",
+    "controllers",
+    "endpoints"
+  ],
+  "files": [
+    "bin/"
+  ],
   "devDependencies": {
     "@types/typescript": "^2.0.0",
     "@types/node": "^8.0.29",
