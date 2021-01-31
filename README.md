@@ -3,7 +3,6 @@
 A powerful Typescript based middleware for Express.
 
 # Installation
-***
 This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
 Installation is done using the [`npm install` command](https://docs.npmjs.com/downloading-and-installing-packages-locally):
 ```
@@ -11,11 +10,9 @@ $ npm install xpress-bootstrap
 ```
 
 # Goal and Philosophy
-***
 `Express Bootstrap ` strives to be a powerful middleware for [Express.js](https://www.npmjs.com/package/express) that makes developing APIs faster and easier.
 
 # Getting Started
-***
 - Install `xpress-bootstrap`.
 - Install [Express](https://www.npmjs.com/package/express).
 - Install [ts-node](https://www.npmjs.com/package/ts-node) and [typescript](https://www.npmjs.com/package/typescript) as dev dependencies.
@@ -65,7 +62,6 @@ $ npm install xpress-bootstrap
 - Navigate to [localhost:5000](http://localhost:5000/api/home/hello) in your browser.
 
 # Documentation
-***
 - #### Controllers
     API Controllers are classes that group together a set of endpoints that lie under the same resource. For instance, all endpoints/api actions relating to a user could be grouped under a `UsersController`.
     
@@ -254,17 +250,13 @@ $ npm install xpress-bootstrap
     ```
 
 # CLI
-***
 A CLI for this package is underway.
 
 # People
-***
 The original author of Express Bootstrap is [Shuja Rizvi](https://github.com/ShujaARizvi).
 
 # License
-***
 [MIT](https://github.com/ShujaARizvi/express-typescript/blob/main/LICENSE)
 
 # Keywords
-***
 [express](https://www.npmjs.com/package/express) [bootstrap](https://www.google.com/search?q=bootstrap+meaning) [typescript](https://www.npmjs.com/package/typescript) [api](https://www.google.com/search?q=api+meaning) [controllers](https://www.tutorialsteacher.com/Content/images/webapi/webapi-request-pipeline.png) [endpoints](https://smartbear.com/learn/performance-monitoring/api-endpoints/#:~:text=For%20APIs%2C%20an%20endpoint%20can,to%20carry%20out%20their%20function.&text=The%20place%20that%20APIs%20send,lives%2C%20is%20called%20an%20endpoint.)
