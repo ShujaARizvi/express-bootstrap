@@ -7,7 +7,7 @@ A powerful Typescript based middleware for Express.
 This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
 Installation is done using the [`npm install` command](https://docs.npmjs.com/downloading-and-installing-packages-locally):
 ```
-$ npm install express
+$ npm install xpress-bootstrap
 ```
 
 # Goal and Philosophy
