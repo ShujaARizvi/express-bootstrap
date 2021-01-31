@@ -61,6 +61,7 @@ $ npm install xpress-bootstrap
     const port = 5000;
     app.listen(port, () => console.log(`Listening at port ${port}`));
     ```
+- Install [nodemon](https://www.npmjs.com/package/nodemon), either as dev dependency or globally and use `nodemon app.ts` to run the application.
 - Navigate to [localhost:5000](http://localhost:5000/api/home/hello) in your browser.
 
 # Documentation
@@ -169,7 +170,7 @@ $ npm install xpress-bootstrap
         ```
         
 - #### Complex Models
-    Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `compose` and `composeMany` decorators come into play.
+    Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `compose` and `composeMany` decorators come into play.  
     
     ***compose:*** is used when a type composes of another type. For instance, let us assume that the user has an address, which is a separate type. The user model would now look like the following:
     ```
@@ -201,7 +202,7 @@ $ npm install xpress-bootstrap
 - #### Input Validation
     `Express Bootstrap` uses [Joi](https://www.npmjs.com/package/joi) for its user input validation. The `validate` decorator is used to validate each individual field of a model.
     
-    The validate decorator takes an object that has the following 3 properties:
+    The validate decorator takes an object that has the following 3 properties:  
     ***constraint:*** The `Joi` constraint for this property.  
     ***arrayElementsConstraint (Optional):*** If the property is an array of object, this property should be provided to specify the constraint on the array objects.  
     ***model (Optional):*** If an object is used, the type should be provided. The object class should extend the 'Model' class.  
