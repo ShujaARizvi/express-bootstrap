@@ -249,7 +249,7 @@ $ npm install xpress-bootstrap
     ...
     @Get()
     index() {
-        return new Response(HTTPResponse.Success, { message: 'Hello World of Express Typescript' });
+        return new Response(HTTPResponse.Success, { message: 'Hello World of Express Bootstrap' });
     }
     ```
 
