@@ -1,6 +1,6 @@
 {
   "name": "xpress-bootstrap",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A powerful Typescript based middleware for Express.",
   "scripts": {
     "start": "node bin/app.js",

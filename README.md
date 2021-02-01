@@ -33,6 +33,7 @@ $ npm install xpress-bootstrap
 - In **tsconfig.json**, change the `target` to *ES6* or later and uncomment `experimentalDecorators` and `emitDecoratorMetadata`.
 - Create a file `homeController.ts` and copy the following snippet:
     ```js
+    import { HTTPResponse } from "xpress-bootstrap/bin/constants/enum";
     import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
     import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
     import { Response } from 'xpress-bootstrap/bin/models/response';
