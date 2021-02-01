@@ -14,16 +14,25 @@ $ npm install xpress-bootstrap
 
 # Getting Started
 - Install `xpress-bootstrap`.
+    ```
+    $ npm install xpress-bootstrap
+    ```
 - Install [Express](https://www.npmjs.com/package/express).
+    ```
+    $ npm install express
+    ```
 - Install [ts-node](https://www.npmjs.com/package/ts-node) and [typescript](https://www.npmjs.com/package/typescript) as dev dependencies.
+    ```
+    $ npm install -D ts-node typescript
+    ```
 - Run the following command to initiate a `typescript` project:
     ``` 
-    $ tsc --init
+    $ npx tsc --init
     ```
     A `tsconfig.json` file will be generated.
-- Uncomment `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig.
+- In **tsconfig.json**, change the `target` to *ES6* or later and uncomment `experimentalDecorators` and `emitDecoratorMetadata`.
 - Create a file `homeController.ts` and copy the following snippet:
-    ```
+    ```js
     import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
     import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
     import { Response } from 'xpress-bootstrap/bin/models/response';
@@ -41,7 +50,7 @@ $ npm install xpress-bootstrap
     }
     ```
 - Create a file `app.ts` and copy the following snippet:
-    ```
+    ```js
     import { bootstrap } from "xpress-bootstrap/bin/bootstrapper";
     import { HomeController } from "./homeController";
     import express from 'express';
@@ -58,7 +67,7 @@ $ npm install xpress-bootstrap
     const port = 5000;
     app.listen(port, () => console.log(`Listening at port ${port}`));
     ```
-- Install [nodemon](https://www.npmjs.com/package/nodemon), either as dev dependency or globally and use `nodemon app.ts` to run the application.
+- Use `npx ts-node app.ts` to run the application.
 - Navigate to [localhost:5000](http://localhost:5000/api/home/hello) in your browser.
 
 # Documentation
@@ -68,33 +77,33 @@ $ npm install xpress-bootstrap
     To create an api controller, simply ***export*** a typescript class that extends the `BaseController` class. The class name should end in `Controller`.
     
     All controllers must ***extend*** the `BaseController`, otherwise they won't be bootstrap compatible.
-    ```
+    ```js
     export class UsersController extends BaseController {}
     ```
 - #### Routing
     - ##### Get
         Specifies that a controller method is to be exposed as an HTTP GET endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```
+        ```js
         @Get('/hello')
         ```
     - ##### Post
         Specifies that a controller method is to be exposed as an HTTP POST endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```
+        ```js
         @Post()
         ```
     - ##### Put
         Specifies that a controller method is to be exposed as an HTTP PUT endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```
+        ```js
         @Put('/:id/:username')
         ```
     - ##### Patch
         Specifies that a controller method is to be exposed as an HTTP PATCH endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```
+        ```js
         @Patch()
         ```
     - ##### Delete
         Specifies that a controller method is to be exposed as an HTTP DELETE endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```
+        ```js
         @Delete('/:id')
         ```
 - #### Request Parameters
@@ -112,7 +121,7 @@ $ npm install xpress-bootstrap
         The query section can be deserialized into a typescript class using the decorators described in the section `Request Deserialization` below.
     - ##### Request Body
         Body parameters come from the body/payload of the request. These can be any random JSON. For instance:
-        ```
+        ```json
         {
             "name": "John Doe",
             "age": 24,
@@ -124,7 +133,7 @@ $ npm install xpress-bootstrap
     `Express Bootstrap` can also deserialize api requests into specified custom models.
     - ##### Route Params
         Use the `FromRoute` decorator to parse a parameter from the route. The usage is as below:
-        ```
+        ```js
         @Get('/:id')
         getUserById(@FromRoute('id') id: number)
         ```
@@ -133,7 +142,7 @@ $ npm install xpress-bootstrap
         Use the `FromQuery` decorator to parse the whole query section into a custom typescript class/model.
         
         To do this, first define a model, let's say, `UserFilter`.
-        ```
+        ```js
         // userFilter.ts
         export class UserFilter extends Model {
             page: number;
@@ -143,14 +152,14 @@ $ npm install xpress-bootstrap
         **Note that the models that you want `Express Bootstrap` to auto deserialize should extend the `Model` class.*
         
         Next, use the `FromQuery` decorator in the method parameter and provide the `UserFilter` model as a parameter to the decorator, as follows:
-        ```
+        ```js
         getUsersByFilter(@FromQuery(UserFilter) userFilter: UserFilter)
         ```
     - ##### Request Body
         Use the `FromBody` decorator to parse the whole body/payload section into a custom typescript class/model.
         
         To do this, first define a model, let's say, `User`.
-        ```
+        ```js
         // user.ts
         export class User extends Model {
             public name: string;
@@ -161,7 +170,7 @@ $ npm install xpress-bootstrap
         **Note that the models that you want `Express Bootstrap` to auto deserialize should extend the `Model` class.*
         
         Next, use the `FromBody` decorator in the method parameter and provide the `User` model as a parameter to the decorator, as follows:
-        ```
+        ```js
         createUser(@FromBody(User) user: User)
         ```
         
@@ -169,7 +178,7 @@ $ npm install xpress-bootstrap
     Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `compose` and `composeMany` decorators come into play.  
     
     ***compose:*** is used when a type composes of another type. For instance, let us assume that the user has an address, which is a separate type. The user model would now look like the following:
-    ```
+    ```js
     export class User extends Model {
         public name: string;
         public email: string;
@@ -182,7 +191,7 @@ $ npm install xpress-bootstrap
     The `Address` could in turn compose of other types.
     
     ***composeMany:*** is used when a type composes of a collection of another type. For instance, let us assume that the user has a set of nicknames. For brevity, the nicknames are just simple strings. The user model would now look like the following:
-    ```
+    ```js
     export class User extends Model {
         public name: string;
         public email: string;
@@ -204,7 +213,7 @@ $ npm install xpress-bootstrap
     ***model (Optional):*** If an object is used, the type should be provided. The object class should extend the 'Model' class.  
 
     Lets take our good old `User` type and apply input validation to it. It would look something like the following:
-    ```
+    ```js
     export class User extends Model {
         @validate({ constraint: Joi.string() })
         public name: string;
@@ -238,7 +247,7 @@ $ npm install xpress-bootstrap
 
 - #### Response Entity
     A `Response` entity could be used to return a status code alongwith the response object. The usage is as follows:
-    ```
+    ```js
     import { HTTPResponse } from 'xpress-bootstrap/bin/constants/enum';
     import { Response } from 'xpress-bootstrap/bin/models/response';
     ...
@@ -257,3 +266,6 @@ The original author of Express Bootstrap is [Shuja Rizvi](https://github.com/Shu
 
 # License
 [MIT](https://github.com/ShujaARizvi/express-typescript/blob/main/LICENSE)
+
+# Keywords
+[express](https://www.npmjs.com/package/express) [bootstrap](https://www.google.com/search?q=bootstrap+meaning) [typescript](https://www.npmjs.com/package/typescript) [api](https://www.google.com/search?q=api+meaning) [controllers](https://www.tutorialsteacher.com/Content/images/webapi/webapi-request-pipeline.png) [endpoints](https://smartbear.com/learn/performance-monitoring/api-endpoints/#:~:text=For%20APIs%2C%20an%20endpoint%20can,to%20carry%20out%20their%20function.&text=The%20place%20that%20APIs%20send,lives%2C%20is%20called%20an%20endpoint.)
