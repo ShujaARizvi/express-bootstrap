@@ -260,7 +260,12 @@ $ npm install xpress-bootstrap
     ```
 
 # CLI
-A CLI for this package is underway.
+`Express Bootstrap` also comes with a CLI to easily initiate a *Getting Started* project. 
+After initiating an npm project and installing `xpress-bootstrap`, use the following:
+```
+npx xpress-bootstrap init
+```
+This will initiate a typescript project, create a basic application, and install the required dependencies.
 
 # People
 The original author of Express Bootstrap is [Shuja Rizvi](https://github.com/ShujaARizvi).

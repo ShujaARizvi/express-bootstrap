@@ -1,11 +1,14 @@
 {
   "name": "xpress-bootstrap",
-  "version": "1.0.6",
+  "version": "1.0.18",
   "description": "A powerful Typescript based middleware for Express.",
   "scripts": {
     "start": "node bin/app.js",
     "dev": "nodemon app/app.ts",
     "build": "tsc -p ."
+  },
+  "bin": {
+    "init": "cli/init.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +29,8 @@
     "endpoints"
   ],
   "files": [
-    "bin/"
+    "bin/",
+    "cli/"
   ],
   "devDependencies": {
     "@types/typescript": "^2.0.0",

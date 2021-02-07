@@ -1,0 +1,16 @@
+import { HTTPResponse } from "xpress-bootstrap/bin/constants/enum";
+import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
+import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
+import { Response } from 'xpress-bootstrap/bin/models/response';
+
+export class HomeController extends BaseController {
+
+    @Get('/hello')
+    index() {
+        const resp = {
+            Message: 'Hello World of Xpress Bootstrap!',
+            Controller: 'HomeController'
+        };
+        return new Response(HTTPResponse.Success, resp);
+    }
+}
