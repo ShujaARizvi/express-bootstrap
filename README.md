@@ -278,7 +278,7 @@ $ npm install xpress-bootstrap
         ]
     }));
     ```
-    **base:** It is an optional base url for all routes. For example, /api, /api/v1...
+    **base:** It is an optional base url for all routes. For example, /api, /api/v1...  
     **controllers:** An array of all the controllers created throughout the application which needs to be registered with `express-bootstrap` so it can provide navigation according to api requests.
     
     Note that `bootstrap` should be the last middleware used since its responsible for terminating the api request.
