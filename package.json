@@ -1,6 +1,6 @@
 {
   "name": "xpress-bootstrap",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "description": "A powerful Typescript based middleware for Express.",
   "scripts": {
     "start": "node bin/app.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ShujaARizvi/express-typescript.git"
+    "url": "git+https://github.com/ShujaARizvi/express-bootstrap.git"
   },
   "author": "Shuja Rizvi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ShujaARizvi/express-typescript/issues"
+    "url": "https://github.com/ShujaARizvi/express-bootstrap/issues"
   },
-  "homepage": "https://github.com/ShujaARizvi/express-typescript#readme",
+  "homepage": "https://github.com/ShujaARizvi/express-bootstrap#readme",
   "keywords": [
     "express",
     "bootstrap",

@@ -13,6 +13,7 @@ $ npm install xpress-bootstrap
 `Express Bootstrap ` strives to be a powerful middleware for [Express.js](https://www.npmjs.com/package/express) that makes developing APIs faster and easier.
 
 # Getting Started
+**Note:** Navigate to [CLI](#cli) section to learn about quickly generating a _Getting Started_ project.
 - Install `xpress-bootstrap`.
     ```
     $ npm install xpress-bootstrap
@@ -32,7 +33,7 @@ $ npm install xpress-bootstrap
     A `tsconfig.json` file will be generated.
 - In **tsconfig.json**, change the `target` to *ES6* or later and uncomment `experimentalDecorators` and `emitDecoratorMetadata`.
 - Create a file `homeController.ts` and copy the following snippet:
-    ```js
+    ```ts
     import { HTTPResponse } from "xpress-bootstrap/bin/constants/enum";
     import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
     import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
@@ -51,7 +52,7 @@ $ npm install xpress-bootstrap
     }
     ```
 - Create a file `app.ts` and copy the following snippet:
-    ```js
+    ```ts
     import { bootstrap } from "xpress-bootstrap/bin/bootstrapper";
     import { HomeController } from "./homeController";
     import express from 'express';
@@ -78,33 +79,33 @@ $ npm install xpress-bootstrap
     To create an api controller, simply ***export*** a typescript class that extends the `BaseController` class. The class name should end in `Controller`.
     
     All controllers must ***extend*** the `BaseController`, otherwise they won't be bootstrap compatible.
-    ```js
+    ```ts
     export class UsersController extends BaseController {}
     ```
 - #### Routing
     - ##### Get
         Specifies that a controller method is to be exposed as an HTTP GET endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```js
+        ```ts
         @Get('/hello')
         ```
     - ##### Post
         Specifies that a controller method is to be exposed as an HTTP POST endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```js
+        ```ts
         @Post()
         ```
     - ##### Put
         Specifies that a controller method is to be exposed as an HTTP PUT endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```js
+        ```ts
         @Put('/:id/:username')
         ```
     - ##### Patch
         Specifies that a controller method is to be exposed as an HTTP PATCH endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```js
+        ```ts
         @Patch()
         ```
     - ##### Delete
         Specifies that a controller method is to be exposed as an HTTP DELETE endpoint. Provide an optional route for the method to be exposed as endpoint. If not provided, assumes the default for this resource.
-        ```js
+        ```ts
         @Delete('/:id')
         ```
 - #### Request Parameters
@@ -134,7 +135,7 @@ $ npm install xpress-bootstrap
     `Express Bootstrap` can also deserialize api requests into specified custom models.
     - ##### Route Params
         Use the `FromRoute` decorator to parse a parameter from the route. The usage is as below:
-        ```js
+        ```ts
         @Get('/:id')
         getUserById(@FromRoute('id') id: number)
         ```
@@ -143,7 +144,7 @@ $ npm install xpress-bootstrap
         Use the `FromQuery` decorator to parse the whole query section into a custom typescript class/model.
         
         To do this, first define a model, let's say, `UserFilter`.
-        ```js
+        ```ts
         // userFilter.ts
         export class UserFilter extends Model {
             page: number;
@@ -153,14 +154,14 @@ $ npm install xpress-bootstrap
         **Note that the models that you want `Express Bootstrap` to auto deserialize should extend the `Model` class.*
         
         Next, use the `FromQuery` decorator in the method parameter and provide the `UserFilter` model as a parameter to the decorator, as follows:
-        ```js
+        ```ts
         getUsersByFilter(@FromQuery(UserFilter) userFilter: UserFilter)
         ```
     - ##### Request Body
         Use the `FromBody` decorator to parse the whole body/payload section into a custom typescript class/model.
         
         To do this, first define a model, let's say, `User`.
-        ```js
+        ```ts
         // user.ts
         export class User extends Model {
             public name: string;
@@ -171,7 +172,7 @@ $ npm install xpress-bootstrap
         **Note that the models that you want `Express Bootstrap` to auto deserialize should extend the `Model` class.*
         
         Next, use the `FromBody` decorator in the method parameter and provide the `User` model as a parameter to the decorator, as follows:
-        ```js
+        ```ts
         createUser(@FromBody(User) user: User)
         ```
         
@@ -179,7 +180,7 @@ $ npm install xpress-bootstrap
     Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `compose` and `composeMany` decorators come into play.  
     
     ***compose:*** is used when a type composes of another type. For instance, let us assume that the user has an address, which is a separate type. The user model would now look like the following:
-    ```js
+    ```ts
     export class User extends Model {
         public name: string;
         public email: string;
@@ -192,7 +193,7 @@ $ npm install xpress-bootstrap
     The `Address` could in turn compose of other types.
     
     ***composeMany:*** is used when a type composes of a collection of another type. For instance, let us assume that the user has a set of nicknames. For brevity, the nicknames are just simple strings. The user model would now look like the following:
-    ```js
+    ```ts
     export class User extends Model {
         public name: string;
         public email: string;
@@ -214,7 +215,7 @@ $ npm install xpress-bootstrap
     ***model (Optional):*** If an object is used, the type should be provided. The object class should extend the 'Model' class.  
 
     Lets take our good old `User` type and apply input validation to it. It would look something like the following:
-    ```js
+    ```ts
     export class User extends Model {
         @validate({ constraint: Joi.string() })
         public name: string;
@@ -248,7 +249,7 @@ $ npm install xpress-bootstrap
 
 - #### Response Entity
     A `Response` entity could be used to return a status code alongwith the response object. The usage is as follows:
-    ```js
+    ```ts
     import { HTTPResponse } from 'xpress-bootstrap/bin/constants/enum';
     import { Response } from 'xpress-bootstrap/bin/models/response';
     ...
@@ -258,8 +259,31 @@ $ npm install xpress-bootstrap
         return new Response(HTTPResponse.Success, { message: 'Hello World of Express Bootstrap' });
     }
     ```
-
-# CLI
+- ### The Bootstrap
+    Since `Express Bootstrap` is desgined as a middleware for `ExpressJS`, it should be registered with Express to be used. Registration is straightforward and can be done in few simple steps.
+    `bootstrap` is a function so it should first be imported:
+    ``` ts
+    import { bootstrap } from "xpress-bootstrap/bin/bootstrapper";
+    ```
+    After importing `bootstrap`, `express`, and other dependencies, its time to setup express. Let us create a simple express application with not much going on. This could be done as follows:
+    ``` ts
+    const app = express();
+    ```
+    Now, register `bootstrap` as a middleware to express by providing the required parameters:
+    ``` ts
+    app.use(bootstrap({
+        base: '/api',
+        controllers: [
+            HomeController
+        ]
+    }));
+    ```
+    **base:** It is an optional base url for all routes. For example, /api, /api/v1...
+    **controllers:** An array of all the controllers created throughout the application which needs to be registered with `express-bootstrap` so it can provide navigation according to api requests.
+    
+    Note that `bootstrap` should be the last middleware used since its responsible for terminating the api request.
+    
+# <a name="cli"></a> CLI
 `Express Bootstrap` also comes with a CLI to easily initiate a *Getting Started* project. 
 After initiating an npm project and installing `xpress-bootstrap`, use the following:
 ```
