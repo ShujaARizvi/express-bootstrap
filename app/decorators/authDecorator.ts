@@ -1,4 +1,5 @@
 import { RouteAuthInfo } from "../entities/routeAuthInfo";
+import { AuthResponse } from "../models/authResponse";
 
 export const authRoutesPropertyName = 'authRoutes';
 
@@ -10,7 +11,7 @@ function checkAndInitializeAuthRoutes(target: any) {
     }
 }
 
-export function Auth(authCallback?: () => boolean) {
+export function Auth(authCallback?: () => AuthResponse) {
     
     return (target: any, propertyKey: string) => {
         checkAndInitializeAuthRoutes(target);

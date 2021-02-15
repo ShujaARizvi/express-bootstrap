@@ -8,6 +8,7 @@ import Joi, { object, ValidationError } from "joi";
 import { responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
 import { authRoutesPropertyName } from './decorators/authDecorator';
 import { RouteAuthInfo } from "./entities/routeAuthInfo";
+import { AuthResponse } from "./models/authResponse";
 
 /**
  * Bootstraps the whole application.
@@ -25,7 +26,7 @@ export function bootstrap(params: {
     /**
      * Method to call while performing authentication and authorization on different routes. 
      */
-    authCallback?: () => boolean
+    authCallback?: () => AuthResponse
 }) {
     
     params.controllers.forEach(x => {
@@ -58,7 +59,7 @@ export function bootstrap(params: {
                 
                 // Initially, verify if the route has AuthNAuth enabled.
                 // If so, call the appropriate AuthNAuth handler.
-                let authResponse = true;
+                let authResponse = new AuthResponse(true, HTTPResponse.Success);
 
                 // Fetching auth info for all routes within the target controller.
                 const authRoutes = <Array<RouteAuthInfo>>controller[authRoutesPropertyName];
@@ -67,7 +68,7 @@ export function bootstrap(params: {
                     const targetRouteAuthInfo = authRoutes.find(x => x.method === matchedRoute.method);
 
                     if (targetRouteAuthInfo) {
-                        // If callback is assigned to the auth info, use it, otherwise use the one provided in this method if present.s
+                        // If callback is assigned to the auth info, use it, otherwise use the one provided in this method if present.
                         const targetCallback = targetRouteAuthInfo.callback ? targetRouteAuthInfo.callback : (params.authCallback ? params.authCallback : undefined);
 
                         if (targetCallback) {
@@ -75,8 +76,8 @@ export function bootstrap(params: {
                         }
                     }
                 }
-                if (!authResponse) {
-                    return res.status(401).send('Unauthorized');
+                if (!authResponse.isAuthenticatedAndAuthorized) {
+                    return res.status(authResponse.statusCode).send(authResponse.authFailureMessage);
                 }
                 
                 const routeParams =  getRouteParams(matchedRoute.route, matchedRoute.routeParamsIndices, url);
