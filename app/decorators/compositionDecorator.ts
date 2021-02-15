@@ -1,5 +1,12 @@
 import { Composition } from "../entities/composition";
-import { Model } from "../models/baseModel";
+
+function checkAndInitializeCompositions(target: any) {
+    if (!target.hasOwnProperty('compositions')) {
+        Object.defineProperty(target, 'compositions', {
+            value: new Array<Composition>()
+        });
+    }
+}
 
 /**
  * Specify on the array properties.
@@ -30,13 +37,5 @@ export function compose(type: any) {
     return (target: any, propertyKey: string) => {
         checkAndInitializeCompositions(target);
         target.compositions.push(new Composition(propertyKey, type, false));
-    }
-}
-
-function checkAndInitializeCompositions(target: any) {
-    if (!target.hasOwnProperty('compositions')) {
-        Object.defineProperty(target, 'compositions', {
-            value: new Array<Composition>()
-        });
     }
 }
