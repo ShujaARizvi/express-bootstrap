@@ -1,3 +1,6 @@
+import { IncomingHttpHeaders } from "http";
+import { ParsedQs } from 'qs'
+
 import { RouteAuthInfo } from "../entities/routeAuthInfo";
 import { AuthResponse } from "../models/authResponse";
 
@@ -11,7 +14,7 @@ function checkAndInitializeAuthRoutes(target: any) {
     }
 }
 
-export function Auth(authCallback?: () => AuthResponse) {
+export function Auth(authCallback?: (headers: IncomingHttpHeaders, query: ParsedQs) => AuthResponse) {
     
     return (target: any, propertyKey: string) => {
         checkAndInitializeAuthRoutes(target);

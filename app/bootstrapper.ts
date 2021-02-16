@@ -4,11 +4,13 @@ import { NextFunction, Request, Response } from 'express';
 import { RouteInfo } from "./entities/routeInfo";
 import { HTTPResponse, ParamType } from "./constants/enum";
 import { deserialize } from "./helpers/json";
-import Joi, { object, ValidationError } from "joi";
+import Joi from "joi";
 import { responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
 import { authRoutesPropertyName } from './decorators/authDecorator';
 import { RouteAuthInfo } from "./entities/routeAuthInfo";
 import { AuthResponse } from "./models/authResponse";
+import { IncomingHttpHeaders } from "http";
+import { ParsedQs } from 'qs'
 
 /**
  * Bootstraps the whole application.
@@ -26,7 +28,7 @@ export function bootstrap(params: {
     /**
      * Method to call while performing authentication and authorization on different routes. 
      */
-    authCallback?: () => AuthResponse
+    authCallback?: (headers: IncomingHttpHeaders, query: ParsedQs) => AuthResponse
 }) {
     
     params.controllers.forEach(x => {
@@ -69,10 +71,10 @@ export function bootstrap(params: {
 
                     if (targetRouteAuthInfo) {
                         // If callback is assigned to the auth info, use it, otherwise use the one provided in this method if present.
-                        const targetCallback = targetRouteAuthInfo.callback ? targetRouteAuthInfo.callback : (params.authCallback ? params.authCallback : undefined);
+                        const targetCallback = targetRouteAuthInfo.callback ? targetRouteAuthInfo.callback : params.authCallback;
 
                         if (targetCallback) {
-                            authResponse = targetCallback();
+                            authResponse = targetCallback(req.headers, req.query);
                         }
                     }
                 }
