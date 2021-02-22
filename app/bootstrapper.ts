@@ -1,16 +1,17 @@
+import { NextFunction, Request, Response } from 'express';
+import Joi from "joi";
+
 import { BaseController } from "./controllers/baseController";
 import { ControllersContainer } from './container';
-import { NextFunction, Request, Response } from 'express';
 import { RouteInfo } from "./entities/routeInfo";
 import { HTTPResponse, ParamType } from "./constants/enum";
 import { deserialize } from "./helpers/json";
-import Joi from "joi";
 import { responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
-import { authRoutesPropertyName } from './decorators/authDecorator';
+import { authRoutesPropertyName, controllerLevelAuthPropertyName, noAuthRoutesPropertyName } from './decorators/authDecorator';
 import { RouteAuthInfo } from "./entities/routeAuthInfo";
 import { AuthResponse } from "./models/authResponse";
-import { IncomingHttpHeaders } from "http";
-import { ParsedQs } from 'qs'
+import { Request as XRequest } from './models/request';
+import { Endpoint } from './models/endpoint';
 
 /**
  * Bootstraps the whole application.
@@ -28,13 +29,14 @@ export function bootstrap(params: {
     /**
      * Method to call while performing authentication and authorization on different routes. 
      */
-    authCallback?: (headers: IncomingHttpHeaders, query: ParsedQs) => AuthResponse
+    authCallback?: (req: XRequest, endpoint: Endpoint) => AuthResponse
 }) {
     
     params.controllers.forEach(x => {
-        const controllerName = x.name.replace('Controller', '').toLowerCase();
+        const controllerName = x.name.replace('Controller', '');
         const controllerInstance = new x();
-        ControllersContainer.set(controllerName, controllerInstance);
+        controllerInstance.name = controllerName;
+        ControllersContainer.set(controllerName.toLowerCase(), controllerInstance);
     });
     const trimRegex = /(^\/)|(\/$)/g;
     params.base = params.base ? `/${params.base.replace(trimRegex, '')}` : '';
@@ -65,19 +67,51 @@ export function bootstrap(params: {
 
                 // Fetching auth info for all routes within the target controller.
                 const authRoutes = <Array<RouteAuthInfo>>controller[authRoutesPropertyName];
+                // Fetching no auth info for all routes within the target controller.
+                const noAuthRoutes = <Array<RouteAuthInfo>>controller[noAuthRoutesPropertyName];
+                // Fetching auth info for the controller itself.
+                const controllerAuth = controller[controllerLevelAuthPropertyName];
+                
                 if (authRoutes) {
                     // Find the auth info for the target route/method.
                     const targetRouteAuthInfo = authRoutes.find(x => x.method === matchedRoute.method);
-
+                    
                     if (targetRouteAuthInfo) {
                         // If callback is assigned to the auth info, use it, otherwise use the one provided in this method if present.
-                        const targetCallback = targetRouteAuthInfo.callback ? targetRouteAuthInfo.callback : params.authCallback;
-
-                        if (targetCallback) {
-                            authResponse = targetCallback(req.headers, req.query);
+                        const targetCallback = targetRouteAuthInfo.callback ? targetRouteAuthInfo.callback : 
+                        controllerAuth && controllerAuth.callback ? controllerAuth.callback : params.authCallback;
+                        authResponse = determineAuthResponse(req, matchedRoute, controllerName, targetCallback);
+                    // Since an @Auth decorator is not found on our target method, perhaps the whole controller is under Auth.
+                    } else if (controllerAuth) {
+                        // The whole controller is under Auth. Now we need to check whether our method is excluded from Auth.
+                        // Find the no auth info for the target route/method.
+                        let targetRouteNoAuthInfo;
+                        if (noAuthRoutes) {
+                            targetRouteNoAuthInfo = noAuthRoutes.find(x => x.method === matchedRoute.method);
+                        }
+                    
+                        // Since our method is not found within NoAuth routes, we can proceed with the auth callback.
+                        if (!targetRouteNoAuthInfo) {
+                            const targetCallback = controllerAuth.callback ? controllerAuth.callback : params.authCallback;
+                            authResponse = determineAuthResponse(req, matchedRoute, controllerName, targetCallback);
                         }
                     }
+                // Since an @Auth decorator is not found on any of the target controller's methods, perhaps the whole controller is under Auth.
+                } else if (controllerAuth) {
+                    // The whole controller is under Auth. Now we need to check whether our method is excluded from Auth.
+                    // Find the no auth info for the target route/method.
+                    let targetRouteNoAuthInfo;
+                    if (noAuthRoutes) {
+                        targetRouteNoAuthInfo = noAuthRoutes.find(x => x.method === matchedRoute.method);
+                    }
+                    
+                    // Since our method is not found within NoAuth routes, we can proceed with the auth callback.
+                    if (!targetRouteNoAuthInfo) {
+                        const targetCallback = controllerAuth.callback ? controllerAuth.callback : params.authCallback;
+                        authResponse = determineAuthResponse(req, matchedRoute, controllerName, targetCallback);
+                    }
                 }
+
                 if (!authResponse.isAuthenticatedAndAuthorized) {
                     return res.status(authResponse.statusCode).send(authResponse.authFailureMessage);
                 }
@@ -136,6 +170,18 @@ export function bootstrap(params: {
             res.status(404).send('Not Found');
         }
     };
+}
+
+function determineAuthResponse(req: Request, matchedRoute: RouteInfo, controllerName: string, 
+    targetCallback?: (req: XRequest, endpoint: Endpoint) => AuthResponse): AuthResponse {
+    
+    let authResponse = new AuthResponse(true, HTTPResponse.Success);
+    if (targetCallback) {
+        const request = new XRequest(req.headers, req.query, req.body);
+        const endpoint = new Endpoint(matchedRoute.route, controllerName, matchedRoute.method, matchedRoute.httpMethod);
+        authResponse = targetCallback(request, endpoint);
+    }
+    return authResponse;
 }
     
 function getRouteParams(toMatch: string, routeParamsIndices: number[], toParse: string) {
