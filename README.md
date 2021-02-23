@@ -283,7 +283,7 @@ $ npm install xpress-bootstrap
     
     Note that `bootstrap` should be the last middleware used since its responsible for terminating the api request.
 
-- #### Authentication & Authorization
+- ### Authentication & Authorization
     Express Bootstrap provides the capability to authenticate and authorize api calls. Since a user may wish to implement auth one way or the other, Express Bootstrap leaves the implementaion upto the user. Auth can be enabled by providing an optional callback to the `bootstrap` function. This callback is called before executing the auth-enabled endpoints' logic.
     The callback is a function that takes two arguments, a `Request` and a `Endpoint` entity, and returns a `AuthResponse`.
     ```TS
