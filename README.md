@@ -282,7 +282,47 @@ $ npm install xpress-bootstrap
     **controllers:** An array of all the controllers created throughout the application which needs to be registered with `express-bootstrap` so it can provide navigation according to api requests.
     
     Note that `bootstrap` should be the last middleware used since its responsible for terminating the api request.
+
+- #### Authentication & Authorization
+    Express Bootstrap provides the capability to authenticate and authorize api calls. Since a user may wish to implement auth one way or the other, Express Bootstrap leaves the implementaion upto the user. Auth can be enabled by providing an optional callback to the `bootstrap` function. This callback is called before executing the auth-enabled endpoints' logic.
+    The callback is a function that takes two arguments, a `Request` and a `Endpoint` entity, and returns a `AuthResponse`.
+    ```TS
+    (req: Request, endpoint: Endpoint) => AuthResponse
+    ```
+    ##### + Request:
+    Request is a class wrapping headers, query, and body of an API Request.
+    ##### + Endpoint:
+    Endpoint is a class that contains basic information of the Endpoint that will be called.
+    ##### + AuthResponse:
+    AuthResponse is a class representing response of authentication and authorization.
     
+    A typical callback function would look like the following:
+    ```TS
+    const authCallback = (req: Request, endpoint: Endpoint) => {
+    // Logging contents of Request
+    console.log(req);
+    // Logging contents of Endpoint
+    console.log(endpoint);
+
+    // The auth failed response
+    return new AuthResponse(false, HTTPResponse.Unauthorized, 'This is a test unauthorization message');
+    }
+    ```
+    
+    Now the question arises, how does `Express Bootstrap` determine which endpoints would be under auth. For this purpose, three different decorators are used to achieve different results:
+    ##### 1) @Auth
+    Used on an endpoint/controller method to enable auth on that particular endpoint.
+    ##### 2) @ControllerAuth
+    Used on a controller to enable auth on all endpoints/methods belonging to that controller.
+    ##### 3) @NoAuth
+    Used to exclude an endpoint from auth. It is useful in cases where the `@ControllerAuth` is used and you wish to exclude an endpoint or two.
+    
+    The `@Auth` and `@ControllerAuth` decorators also take an optional parameter, the auth callback like the `bootstrap` method.
+    
+    ##### Priority
+    Method/endpoint level auth callback >> controller level auth callback >> Bootstrap function's auth callback.
+
+
 # <a name="cli"></a> CLI
 `Express Bootstrap` also comes with a CLI to easily initiate a *Getting Started* project. 
 After initiating an npm project and installing `xpress-bootstrap`, use the following:

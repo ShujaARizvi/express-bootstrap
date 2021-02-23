@@ -15,7 +15,7 @@ import { Endpoint } from './models/endpoint';
 
 /**
  * Bootstraps the whole application.
- * @param params Register all the controllers here and optionally provide a base route for all endpoints. 
+ * @param params Params to assist with the bootstrapping process.
  */
 export function bootstrap(params: {
     /**

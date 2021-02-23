@@ -24,6 +24,12 @@ function checkAndInitializeNoAuthRoutes(target: any) {
     }
 }
 
+/**
+ * Specifies that a controller method is to be authenticated and authorized.
+ * @param authCallback Method to call while performing authentication and authorization on this route. 
+ * This callback is optional and if not provided, the callback provided in the `@ControllerAuth` decorator (if used) will be used,
+ * otherwise, `bootstrap` function's callback will be used.
+ */
 export function Auth(authCallback?: (req: Request, endpoint: Endpoint) => AuthResponse) {
     
     return (target: any, propertyKey: string) => {
@@ -37,6 +43,10 @@ export function Auth(authCallback?: (req: Request, endpoint: Endpoint) => AuthRe
     }
 }
 
+/**
+ * Specifies that a controller method is excluded from authentication and authorization.
+ * Useful when the controller is marked with `@ControllerAuth` decorator.
+ */
 export function NoAuth() {
     
     return (target: any, propertyKey: string) => {
@@ -47,6 +57,19 @@ export function NoAuth() {
             throw new Error(`The method ${propertyKey} is already marked with @Auth. Usage of @Auth and @NoAuth decorators is mutually exclusive.`);
         }
         target[noAuthRoutesPropertyName].push(new RouteAuthInfo(propertyKey));
+    }
+}
+
+/**
+ * Specifies that all the routes/method of a controller are to be authenticated and authorized.
+ * @param authCallback Method to call while performing authentication and authorization on the routes of this method. 
+ * This callback is optional and if not provided, the callback provided in `bootstrap` function will be used.
+ */
+export function ControllerAuth(authCallback?: (req: Request, endpoint: Endpoint) => AuthResponse) {
+    
+    return <T extends new (...args: any[]) => {}>(constructor: T) => {
+        (<any>constructor.prototype).controllerAuth = new ControllerAuthInfo(authCallback);
+        return constructor;
     }
 }
 
@@ -65,11 +88,3 @@ export function NoAuth() {
 //         }
 //     }
 // }
-
-export function ControllerAuth(authCallback?: (req: Request, endpoint: Endpoint) => AuthResponse) {
-
-    return <T extends new (...args: any[]) => {}>(constructor: T) => {
-        (<any>constructor.prototype).controllerAuth = new ControllerAuthInfo(authCallback);
-        return constructor;
-    }
-}

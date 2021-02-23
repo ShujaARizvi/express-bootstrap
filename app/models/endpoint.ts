@@ -1,5 +1,9 @@
 import { HTTPMethod } from "../constants/enum";
 
+/**
+ * Class that contains basic information of the Endpoint that will be called.
+ * Intended for providing assistance during authorization. 
+ */
 export class Endpoint {
     /**
      * The user specified route.
