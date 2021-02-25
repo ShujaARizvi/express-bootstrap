@@ -15,7 +15,7 @@ A powerful Typescript based middleware for Express.
       - [Response Entity](#response-entity)  
       - [The Bootstrap](#the-bootstrap)  
       - [Authentication & Authorization](#authentication--authorization)  
-- [<a name="cli"></a> CLI](#-a-name--cli----a--cli)  
+- [CLI](#cli)  
 - [People](#people)  
 - [License](#license)  
 # Installation
@@ -339,7 +339,7 @@ $ npm install xpress-bootstrap
     Method/endpoint level auth callback >> controller level auth callback >> Bootstrap function's auth callback.
 
 
-# <a name="cli"></a> CLI
+# CLI
 `Express Bootstrap` also comes with a CLI to easily initiate a *Getting Started* project. 
 After initiating an npm project and installing `xpress-bootstrap`, use the following:
 ```
