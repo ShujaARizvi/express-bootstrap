@@ -14,7 +14,7 @@ A powerful Typescript based middleware for Express.
       - [Input Validation](#input-validation)  
       - [Response Entity](#response-entity)  
       - [The Bootstrap](#the-bootstrap)  
-      - [Authentication & Authorization](#authentication---authorization)  
+      - [Authentication & Authorization](#authentication--authorization)  
 - [<a name="cli"></a> CLI](#-a-name--cli----a--cli)  
 - [People](#people)  
 - [License](#license)  
