@@ -2,6 +2,22 @@
 
 A powerful Typescript based middleware for Express.
 
+- [Installation](#installation)
+- [Goal and Philosophy](#goal-and-philosophy)
+- [Getting Started](#getting-started)
+- [Documentation](#documentation)  
+      - [Controllers](#controllers)  
+      - [Routing](#routing)   
+      - [Request Parameters](#request-parameters)  
+      - [Request Deserialization](#request-deserialization)  
+      - [Complex Models](#complex-models)  
+      - [Input Validation](#input-validation)  
+      - [Response Entity](#response-entity)  
+      - [The Bootstrap](#the-bootstrap)  
+      - [Authentication & Authorization](#authentication-&-authorization)  
+- [<a name="cli"></a> CLI](#-a-name--cli----a--cli)  
+- [People](#people)  
+- [License](#license)  
 # Installation
 This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
 Installation is done using the [`npm install` command](https://docs.npmjs.com/downloading-and-installing-packages-locally):
