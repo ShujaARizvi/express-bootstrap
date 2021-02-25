@@ -16,7 +16,7 @@ function checkAndInitializeCompositions(target: any) {
  * array of objects to proper types.
  * @param type Type parameter that denotes the class to which an array of object needs to be casted to.
  */
-export function composeMany(type: any) {
+export function ComposeMany(type: any) {
     
     return (target: any, propertyKey: string) => {
         checkAndInitializeCompositions(target);
@@ -32,7 +32,7 @@ export function composeMany(type: any) {
  * objects to proper types.
  * @param type Type parameter that denotes the class to which an object needs to be casted to.
  */
-export function compose(type: any) {
+export function Compose(type: any) {
 
     return (target: any, propertyKey: string) => {
         checkAndInitializeCompositions(target);

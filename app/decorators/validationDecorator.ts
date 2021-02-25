@@ -15,7 +15,7 @@ function checkAndCreateSchemaProperty(target: any) {
 /**
  * Validates a particular property using the constraints provided.
  */
-export function validate(param: {
+export function Validate(param: {
     /**
      * The constraint for this property.
      */

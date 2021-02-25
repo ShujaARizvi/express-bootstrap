@@ -18,6 +18,7 @@ A powerful Typescript based middleware for Express.
 - [CLI](#cli)  
 - [People](#people)  
 - [License](#license)  
+
 # Installation
 This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
 Installation is done using the [`npm install` command](https://docs.npmjs.com/downloading-and-installing-packages-locally):
@@ -26,7 +27,7 @@ $ npm install xpress-bootstrap
 ```
 
 # Goal and Philosophy
-`Express Bootstrap ` strives to be a powerful middleware for [Express.js](https://www.npmjs.com/package/express) that makes developing APIs faster and easier.
+`Express Bootstrap` strives to be a powerful middleware for [Express.js](https://www.npmjs.com/package/express) that makes developing APIs faster and easier.
 
 # Getting Started
 **Note:** Navigate to [CLI](#cli) section to learn about quickly generating a _Getting Started_ project.
@@ -193,29 +194,29 @@ $ npm install xpress-bootstrap
         ```
         
 - #### Complex Models
-    Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `compose` and `composeMany` decorators come into play.  
+    Sometimes you want your models to be a bit complex. This could include cases like composition. This is where the `Compose` and `ComposeMany` decorators come into play.  
     
-    ***compose:*** is used when a type composes of another type. For instance, let us assume that the user has an address, which is a separate type. The user model would now look like the following:
+    ***Compose:*** is used when a type composes of another type. For instance, let us assume that the user has an address, which is a separate type. The user model would now look like the following:
     ```ts
     export class User extends Model {
         public name: string;
         public email: string;
         public age: number;
         
-        @compose(Address)
+        @Compose(Address)
         public address: Address;
     }
     ```
     The `Address` could in turn compose of other types.
     
-    ***composeMany:*** is used when a type composes of a collection of another type. For instance, let us assume that the user has a set of nicknames. For brevity, the nicknames are just simple strings. The user model would now look like the following:
+    ***ComposeMany:*** is used when a type composes of a collection of another type. For instance, let us assume that the user has a set of nicknames. For brevity, the nicknames are just simple strings. The user model would now look like the following:
     ```ts
     export class User extends Model {
         public name: string;
         public email: string;
         public age: number;
         
-        @composeMany(String)
+        @ComposeMany(String)
         public nicknames: string[];
     }
     ```
@@ -223,7 +224,7 @@ $ npm install xpress-bootstrap
     ***Note:*** The limitation of these decorators while deserialization is because of the fact that typescript transpiles into javascript, hence all the types are dissolved at runtime. Since no type information is available at runtime, these decorators are needed to provide the necessary information for proper deserialization.
     
 - #### Input Validation
-    `Express Bootstrap` uses [Joi](https://www.npmjs.com/package/joi) for its user input validation. The `validate` decorator is used to validate each individual field of a model.
+    `Express Bootstrap` uses [Joi](https://www.npmjs.com/package/joi) for its user input validation. The `Validate` decorator is used to validate each individual field of a model.
     
     The validate decorator takes an object that has the following 3 properties:  
     ***constraint:*** The `Joi` constraint for this property.  
@@ -233,32 +234,32 @@ $ npm install xpress-bootstrap
     Lets take our good old `User` type and apply input validation to it. It would look something like the following:
     ```ts
     export class User extends Model {
-        @validate({ constraint: Joi.string() })
+        @Validate({ constraint: Joi.string() })
         public name: string;
         
-        @validate({ constraint: Joi.string().email() })
+        @Validate({ constraint: Joi.string().email() })
         public email: string;
         
-        @validate({ constraint: Joi.number().min(18).max(60) })
+        @Validate({ constraint: Joi.number().min(18).max(60) })
         public age: number;
         
-        @validate({
+        @Validate({
             constraint: Joi.array().items().required(), 
-            model: Interest, 
+            model: Address, 
             arrayElementsConstraint: Joi.object().required()
         })
-        @compose(Address)
+        @Compose(Address)
         public address: Address;
         
-        @validate({ constraint: Joi.array().items(Joi.string()).required() })
-        @composeMany(String)
+        @Validate({ constraint: Joi.array().items(Joi.string()).required() })
+        @ComposeMany(String)
         public nicknames: string[];
     }
     ```
     ***name*** is a string.  
     ***email*** is a string that is an email.  
     ***age*** is a number whose value can be between 18 and 60 inclusive.  
-    ***address*** is an array that is required. It is of type `Interest`. The array should have atleast one object.  
+    ***address*** is an array that is required. It is of type `Address`. The array should have atleast one object.  
     ***nicknames*** is an array of strings. The array is required.  
 
     For a full list of validation options and capabilities, kindly check [Joi documentation](https://joi.dev/api/?v=17.3.0).
