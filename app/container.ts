@@ -1,19 +1,27 @@
+import { AwilixContainer, Lifetime, LifetimeType } from "awilix";
+const awilix = require('awilix');
 
 export class ControllersContainer {
 
-    private static controllersMap: Map<string, Object> =  new Map<string, Object>();
+    // Create the container and set the injectionMode to CLASSIC.
+    private static container: AwilixContainer = awilix.createContainer({
+        injectionMode: awilix.InjectionMode.CLASSIC
+    });
 
-    static set(key: string, value: Object): void {
-        ControllersContainer.controllersMap.set(key, value);
+    private constructor() {}
+
+    public static getContainer() {
+        return ControllersContainer.container;
+    }
+
+    static set(key: string, value: any, lifetime: LifetimeType): void {
+        const obj: any = new Object();
+        obj[key] = awilix.asClass(value, { lifetime: lifetime });
+
+        ControllersContainer.container.register(obj);
     }
     
     static get(key: string): Object | undefined {
-        return ControllersContainer.controllersMap.get(key);
-    }
-
-    static toString() {
-        ControllersContainer.controllersMap.forEach((value, key) => {
-            console.log(`${key}: `, value);
-        });
+        return ControllersContainer.container.resolve(key);
     }
 }

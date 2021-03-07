@@ -1,17 +1,18 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request as ERequest, Response } from 'express';
 import Joi from "joi";
 
-import { BaseController } from "./controllers/baseController";
 import { ControllersContainer } from './container';
 import { RouteInfo } from "./entities/routeInfo";
 import { HTTPResponse, ParamType } from "./constants/enum";
 import { deserialize } from "./helpers/json";
-import { responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
+import { baseControllerClassIdentifier, responseClassIdentifier, validationSchemaPropertyName } from "./constants/constants";
 import { authRoutesPropertyName, controllerLevelAuthPropertyName, noAuthRoutesPropertyName } from './decorators/authDecorator';
 import { RouteAuthInfo } from "./entities/routeAuthInfo";
 import { AuthResponse } from "./models/authResponse";
-import { Request as XRequest } from './models/request';
+import { Request } from './models/request';
 import { Endpoint } from './models/endpoint';
+import { Lifetime } from 'awilix';
+import { BaseController } from './controllers/baseController';
 
 /**
  * Bootstraps the whole application.
@@ -25,23 +26,24 @@ export function bootstrap(params: {
     /**
      * List of controllers to be used throughout the application.
      */
-    controllers: typeof BaseController[],
+    controllers: any[],
     /**
      * Method to call while performing authentication and authorization on different routes. 
      */
-    authCallback?: (req: XRequest, endpoint: Endpoint) => AuthResponse
+    authCallback?: (req: Request, endpoint: Endpoint) => AuthResponse
 }) {
     
+    // Performing validations on the input controller array.
+    // validateControllers(params.controllers);
+
     params.controllers.forEach(x => {
         const controllerName = x.name.replace('Controller', '');
-        const controllerInstance = new x();
-        controllerInstance.name = controllerName;
-        ControllersContainer.set(controllerName.toLowerCase(), controllerInstance);
+        ControllersContainer.set(controllerName.toLowerCase(), x, Lifetime.SINGLETON);
     });
     const trimRegex = /(^\/)|(\/$)/g;
     params.base = params.base ? `/${params.base.replace(trimRegex, '')}` : '';
 
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: ERequest, res: Response, next: NextFunction) => {
 
         let isRouteResolved = false;
         let validationErrorOccurred = false;
@@ -52,7 +54,8 @@ export function bootstrap(params: {
         const queryParams = req.query;
         const requestBody = req.body;
         
-        const controller = <any>ControllersContainer.get(controllerName);
+        const controller: any = ControllersContainer.get(controllerName);
+        controller.name = controllerName;
         
         if (controller) {
             const routes = <RouteInfo[]>(<any>controller).routes;
@@ -172,12 +175,20 @@ export function bootstrap(params: {
     };
 }
 
+function validateControllers(controllers: any[]) {
+    controllers.forEach(x => {
+        if (!(x instanceof BaseController)) {
+            throw new Error(`Controller ${x.constructor.name} doesn't extend BaseController`);
+        }
+    });
+}
+
 function determineAuthResponse(req: Request, matchedRoute: RouteInfo, controllerName: string, 
-    targetCallback?: (req: XRequest, endpoint: Endpoint) => AuthResponse): AuthResponse {
+    targetCallback?: (req: Request, endpoint: Endpoint) => AuthResponse): AuthResponse {
     
     let authResponse = new AuthResponse(true, HTTPResponse.Success);
     if (targetCallback) {
-        const request = new XRequest(req.headers, req.query, req.body);
+        const request = new Request(req.headers, req.query, req.body);
         const endpoint = new Endpoint(matchedRoute.route, controllerName, matchedRoute.method, matchedRoute.httpMethod);
         authResponse = targetCallback(request, endpoint);
     }
