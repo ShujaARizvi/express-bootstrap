@@ -30,7 +30,8 @@
   ],
   "files": [
     "bin/",
-    "cli/"
+    "cli/",
+    "bootstrapperConfig.json"
   ],
   "devDependencies": {
     "@types/typescript": "^2.0.0",

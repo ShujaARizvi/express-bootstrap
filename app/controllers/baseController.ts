@@ -1,5 +1,4 @@
 import { baseControllerClassIdentifier } from "../constants/constants";
-
 /**
  * Base controller which all controllers should inherit.
  */
