@@ -41,9 +41,9 @@ $ npm install xpress-bootstrap
     ```
     $ npm install express
     ```
-- Install [ts-node](https://www.npmjs.com/package/ts-node) and [typescript](https://www.npmjs.com/package/typescript) as dev dependencies.
+- Install [ts-node](https://www.npmjs.com/package/ts-node), [typescript](https://www.npmjs.com/package/typescript) and [@types/express](https://www.npmjs.com/package/@types/express) as dev dependencies.
     ```
-    $ npm install -D ts-node typescript
+    $ npm install -D ts-node typescript @types/express
     ```
 - Run the following command to initiate a `typescript` project:
     ``` 
