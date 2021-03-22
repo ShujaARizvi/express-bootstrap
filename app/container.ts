@@ -14,6 +14,10 @@ export class ControllersContainer {
         return ControllersContainer.container;
     }
 
+    static get(key: string): Object | undefined {
+        return ControllersContainer.container.resolve(key);
+    }
+
     static set(key: string, value: any, lifetime: LifetimeType): void {
         const obj: any = new Object();
         obj[key] = awilix.asClass(value, { lifetime: lifetime });
@@ -21,7 +25,10 @@ export class ControllersContainer {
         ControllersContainer.container.register(obj);
     }
     
-    static get(key: string): Object | undefined {
-        return ControllersContainer.container.resolve(key);
+    static remove(key: string) {
+        const obj: any = new Object();
+        obj[key] = undefined;
+
+        ControllersContainer.container.register(obj);
     }
 }

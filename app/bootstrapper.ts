@@ -31,7 +31,7 @@ export function bootstrap(params: {
 }) {
     
     // console.log(ControllersContainer.getContainer().registrations);
-    
+    const base = new BaseController();
     const configFileName = 'bootstrapperConfig.json';
     const dirName = path.dirname(require!.main!.filename);
     let config;
@@ -46,9 +46,9 @@ export function bootstrap(params: {
         }
         config = require(path.join(path.dirname(__dirname), configFileName));
     }
-    const controllersBase: string = config['controllersBase'];
-    if (!controllersBase) throw Error(`There is no key 'controllersBase' within the file '${configFileName}'.`);
-    const directoryPath = path.join(dirName, controllersBase);
+    const controllersDir: string = config['controllersDir'];
+    if (!controllersDir) throw Error(`There is no key 'controllersDir' within the file '${configFileName}'.`);
+    const directoryPath = path.join(dirName, controllersDir);
     resolveDirectoryFiles(directoryPath, 'Controller');
 
     const trimRegex = /(^\/)|(\/$)/g;
@@ -200,7 +200,7 @@ function resolveDirectoryFiles(directoryPath: string, suffixPattern: string) {
         const controllerFiles = directoryContents.filter((x: any) => x.name.endsWith(`${suffixPattern}.js`) || x.name.endsWith(`${suffixPattern}.ts`));
         
         const folders = directoryContents.filter((x: any) => x.isDirectory());
-        
+
         controllerFiles.forEach((x: any) => {
             require(path.join(directoryPath, x.name));
         });

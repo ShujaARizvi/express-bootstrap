@@ -13,8 +13,10 @@ A powerful Typescript based middleware for Express.
       - [Complex Models](#complex-models)  
       - [Input Validation](#input-validation)  
       - [Response Entity](#response-entity)  
+      - [Project Hierarchy](#project-hierarchy)  
       - [The Bootstrap](#the-bootstrap)  
       - [Authentication & Authorization](#authentication--authorization)  
+      - [Dependency Injection](#dependency-injection)  
 - [CLI](#cli)  
 - [People](#people)  
 - [License](#license)  
@@ -49,13 +51,16 @@ $ npm install xpress-bootstrap
     ```
     A `tsconfig.json` file will be generated.
 - In **tsconfig.json**, change the `target` to *ES6* or later and uncomment `experimentalDecorators` and `emitDecoratorMetadata`.
-- Create a file `homeController.ts` and copy the following snippet:
+- Create a folder named `controllers` in the root directory of the project.
+- Create a file `homeController.ts` inside the `controllers` folder and copy the following snippet:
     ```ts
     import { HTTPResponse } from "xpress-bootstrap/bin/constants/enum";
     import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
     import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
     import { Response } from 'xpress-bootstrap/bin/models/response';
-
+    import { Controller } from 'xpress-bootstrap/bin/decorators/controllerDecorator';
+    
+    @Controller
     export class HomeController extends BaseController {
     
         @Get('/hello')
@@ -71,16 +76,12 @@ $ npm install xpress-bootstrap
 - Create a file `app.ts` and copy the following snippet:
     ```ts
     import { bootstrap } from "xpress-bootstrap/bin/bootstrapper";
-    import { HomeController } from "./homeController";
     import express from 'express';
 
     const app = express();
     
     app.use(bootstrap({
         base: '/api', // Optional base url for all routes
-        controllers: [ // Provide all the application controllers here to be bootstrapped
-            HomeController // A controller class that extends the BaseController
-        ]
     }));
     
     const port = 5000;
@@ -93,10 +94,11 @@ $ npm install xpress-bootstrap
 - #### Controllers
     API Controllers are classes that group together a set of endpoints that lie under the same resource. For instance, all endpoints/api actions relating to a user could be grouped under a `UsersController`.
     
-    To create an api controller, simply ***export*** a typescript class that extends the `BaseController` class. The class name should end in `Controller`.
+    To create an api controller, simply ***export*** a typescript class that extends the `BaseController` class. The class should be decorated with `@Controller` and its name should end in `Controller`.
     
     All controllers must ***extend*** the `BaseController`, otherwise they won't be bootstrap compatible.
     ```ts
+    @Controller
     export class UsersController extends BaseController {}
     ```
 - #### Routing
@@ -276,6 +278,19 @@ $ npm install xpress-bootstrap
         return new Response(HTTPResponse.Success, { message: 'Hello World of Express Bootstrap' });
     }
     ```
+- ### Project Hierarchy
+    As you may have noticed, in the [Getting Started](#getting-started) section, we had placed the `homeController.ts` file inside a folder named `controllers`. This is indeed a requirement for Express Bootstrap. By default, all the controllers should be placed in a directory named controllers, which is read during the bootstrap process and all the qualifying controllers are registered with the application.
+    You can, however, change the path of the controllers directory. As a general convention, this has been made part of the configuration. For this, create a JSON file named `bootstrapperConfig.json` in your project root and save the following inside the file:
+    ```JSON
+    {
+        "controllersDir": "./handlers"
+    }
+    ```
+    Express Bootstrap will now look into a directory named `handlers` to find the controllers to be registered.
+    Since Express Bootstrap iterates the controllers folder recursively searching for all qualifying controllers, we recommend the following:
+    - DONOT keep other files within the controllers directory, unless absolutely necessary.
+    - Try to keep the directory depth as minimal as possible.
+    - DONOT place controllers on the project root.
 - ### The Bootstrap
     Since `Express Bootstrap` is desgined as a middleware for `ExpressJS`, it should be registered with Express to be used. Registration is straightforward and can be done in few simple steps.
     `bootstrap` is a function so it should first be imported:
@@ -289,14 +304,10 @@ $ npm install xpress-bootstrap
     Now, register `bootstrap` as a middleware to express by providing the required parameters:
     ``` ts
     app.use(bootstrap({
-        base: '/api',
-        controllers: [
-            HomeController
-        ]
+        base: '/api'
     }));
     ```
     **base:** It is an optional base url for all routes. For example, /api, /api/v1...  
-    **controllers:** An array of all the controllers created throughout the application which needs to be registered with `express-bootstrap` so it can provide navigation according to api requests.
     
     Note that `bootstrap` should be the last middleware used since its responsible for terminating the api request.
 
@@ -338,8 +349,48 @@ $ npm install xpress-bootstrap
     
     ##### Priority
     Method/endpoint level auth callback >> controller level auth callback >> Bootstrap function's auth callback.
-
-
+- ### Dependency Injection
+    Plain old controllers don't seem to provide much fun. Not to mention you can't have all the business logic inside the controller itself. Generally, you may want to abstract out the business logic to the service layer. This makes a controller dependent upon the relevant service(s). This is where Dependency Injection(DI) comes into play.
+    You can inject any number of dependencies (we call them services) into the controllers through their constructors. All that is needed is for Express Bootstrap to know which dependency to inject, in other words, a dependency should be registered for it to be injected properly. For this purpose, the `@Injectable` decorator is used.
+    Let's take an example of a controller named `RandomController` that has a method `index()` which returns a random number. The controller would look something like the following:
+    ```ts
+    // Imports
+    @Controller
+    export class RandomController extends BaseController {
+        @Get()
+        index() {
+            return Math.round(Math.random() * 100);
+        }
+    }
+    ```
+    Seems pretty cool, right? Now imagine that at some point in future, your logic to fetch the random number becomes too complicated and you want to abstract it into a class named `RandomService`. You can create your class and decorate it with the `@Injectable` decorator, like the following:
+    ```ts
+    import { Injectable } from "xpress-bootstrap/bin/decorators/iocDecorator";
+    
+    @Injectable('randomService')
+    export class RandomService {
+        getRandomNumber() {
+            // Complex logic here...
+        }
+    }
+    ```
+    What this would do is register the `RandomService` as *randomService* (name passed as parameter to @Injectable) inside the IoC container of Express Bootstrap. You can now inject `RandomService` as a dependency inside the `RandomController` constructor:
+    ```ts
+    @Controller
+    export class RandomController extends BaseController {
+        
+        constructor(private randomService: RandomService) {
+            super();
+        }
+        
+        @Get()
+        index() {
+            return this.randomService.getRandomNumber();
+        }
+    }
+    ```
+    Note that the dependency parameter name in the constructor should be the same as that of the registration name you passed in `@Injectable`.
+    As long as Express Bootstrap is resolving the dependency, you can inject any class anywhere in the application.
 # CLI
 `Express Bootstrap` also comes with a CLI to easily initiate a *Getting Started* project. 
 After initiating an npm project and installing `xpress-bootstrap`, use the following:

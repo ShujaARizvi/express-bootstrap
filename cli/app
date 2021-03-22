@@ -1,14 +1,10 @@
 import { bootstrap } from "xpress-bootstrap/bin/bootstrapper";
-import { HomeController } from "./controllers/homeController";
 import express from 'express';
 
 const app = express();
 
 app.use(bootstrap({
-    base: '/api', // Optional base url for all routes
-    controllers: [ // Provide all the application controllers here to be bootstrapped
-        HomeController // A controller class that extends the BaseController
-    ]
+    base: '/api' // Optional base url for all routes
 }));
 
 const port = 5000;

@@ -2,7 +2,9 @@ import { HTTPResponse } from "xpress-bootstrap/bin/constants/enum";
 import { BaseController } from "xpress-bootstrap/bin/controllers/baseController";
 import { Get } from 'xpress-bootstrap/bin/decorators/routingDecorator';
 import { Response } from 'xpress-bootstrap/bin/models/response';
+import { Controller } from 'xpress-bootstrap/bin/decorators/controllerDecorator';
 
+@Controller
 export class HomeController extends BaseController {
 
     @Get('/hello')
