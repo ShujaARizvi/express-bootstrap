@@ -14,6 +14,7 @@ import { AuthResponse } from "./models/authResponse";
 import { Request } from './models/request';
 import { Endpoint } from './models/endpoint';
 import { BaseController } from './controllers/baseController';
+import { isNumber } from 'util';
 
 /**
  * Bootstraps the whole application.
@@ -177,11 +178,17 @@ export function bootstrap(params: {
                     methodExecutionExpression += ')';
                     if (!validationErrorOccurred) {
                         const result = eval(methodExecutionExpression);
-                        // Check if result has the custom 'Response' type.
-                        if (result[responseClassIdentifier]) {
-                            res.status(result.statusCode).send(result.data);
+                        // Check if result is defined.
+                        if (result) {
+                            // Check if result has the custom 'Response' type.
+                            if (result[responseClassIdentifier]) {
+                                res.status(result.statusCode).send(result.data);
+                            } 
+                            else {
+                                res.status(200).send(isNumber(result) ? `${result}` : result);
+                            }
                         } else {
-                            res.status(200).send(result);
+                            res.sendStatus(HTTPResponse.NoContent);
                         }
                     }
                     isRouteResolved = true;
